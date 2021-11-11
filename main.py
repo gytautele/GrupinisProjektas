@@ -10,6 +10,7 @@ f = ''
 flag = ''
 flags = ''
 mainMenu = 'Main Menu'
+mouse = '<MouseWheel>'
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -83,8 +84,8 @@ def ren():
     vsb.grid(row=3, column=2, sticky=N + S)
     lb1.grid(row=3, column=0)
     lb2.grid(row=3, column=1)
-    lb1.bind('<MouseWheel>', onmousewheel)
-    lb2.bind('<MouseWheel>', onmousewheel)
+    lb1.bind(mouse, onmousewheel)
+    lb2.bind(mouse, onmousewheel)
     cur.execute("select *from med")
     for i in cur:
         cx += 1
@@ -159,7 +160,7 @@ def modify():
         name_.insert(cx, (str(i[0]) + '.  ' + str(i[1])))
         name_.grid(row=1, column=1, columnspan=2)
     c.commit()
-    name_.bind('<MouseWheel>', onmousewheel)
+    name_.bind(mouse, onmousewheel)
     name_.bind('<<ListboxSelect>>', sel_mn)
 
     Label(st, text='Enter Medicine Name: ').grid(row=1, column=0)
@@ -289,12 +290,12 @@ def ref():
     lb4.grid(row=15, column=3)
     lb5.grid(row=15, column=4)
     lb6.grid(row=15, column=5)
-    lb1.bind('<MouseWheel>', onmousewheel)
-    lb2.bind('<MouseWheel>', onmousewheel)
-    lb3.bind('<MouseWheel>', onmousewheel)
-    lb4.bind('<MouseWheel>', onmousewheel)
-    lb5.bind('<MouseWheel>', onmousewheel)
-    lb6.bind('<MouseWheel>', onmousewheel)
+    lb1.bind(mouse, onmousewheel)
+    lb2.bind(mouse, onmousewheel)
+    lb3.bind(mouse, onmousewheel)
+    lb4.bind(mouse, onmousewheel)
+    lb5.bind(mouse, onmousewheel)
+    lb6.bind(mouse, onmousewheel)
     cur.execute("select *from med")
     for i in cur:
         cx += 1
@@ -501,8 +502,8 @@ def refresh():
     vsb.grid(row=8, column=2, sticky=N + S)
     lb1.grid(row=8, column=0)
     lb2.grid(row=8, column=1)
-    lb1.bind('<MouseWheel>', onmousewheel)
-    lb2.bind('<MouseWheel>', onmousewheel)
+    lb1.bind(mouse, onmousewheel)
+    lb2.bind(mouse, onmousewheel)
     cur.execute("select *from med")
     for i in cur:
         cx += 1
