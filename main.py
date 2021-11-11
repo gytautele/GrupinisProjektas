@@ -9,6 +9,7 @@ import win32print
 f = ''
 flag = ''
 flags = ''
+mainMenu = 'Main Menu'
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -59,7 +60,7 @@ def delete_stock():
     Label(d, text='Qty.  Exp.dt.     Cost                           ').grid(row=2, column=1)
     ren()
     b = Button(d, width=20, text='Delete', bg='red', fg='white', command=delt).grid(row=0, column=3)
-    b = Button(d, width=20, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=5, column=3)
+    b = Button(d, width=20, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=3)
     d.mainloop()
 
 
@@ -171,7 +172,7 @@ def modify():
     Button(st, width=10, text='Reset', bg='red', fg='white', command=res).grid(row=2, column=5)
     Button(st, width=10, text='Show data', bg='blue', fg='white', command=show_val).grid(row=1, column=4)
     Label(st, text='-' * 120).grid(row=3, column=0, columnspan=6)
-    Button(st, width=10, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=5, column=5)
+    Button(st, width=10, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=5)
     st.mainloop()
 
 
@@ -247,7 +248,7 @@ def stock():
     for i in range(1, 6):
         Label(sto, text=columns[i]).grid(row=14, column=i - 1)
     Label(sto, text='Exp           Rack   Manufacturer                      ').grid(row=14, column=5)
-    Button(sto, width=10, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=12, column=5)
+    Button(sto, width=10, mainMenu, bg='green', fg='white', command=main_menu).grid(row=12, column=5)
     ref()
     sto.mainloop()
 
@@ -376,11 +377,11 @@ def exp_date():
     Button(exp, text='Check Expiry date', bg='red', fg='white', command=s_exp).grid(row=3, column=1)
     Label(exp, text='-' * 80).grid(row=4, column=0, columnspan=3)
     if flags == 'apt1':
-        Button(exp, text='Main Menu', bg='green', fg='white', command=main_cus).grid(row=5, column=2)
+        Button(exp, mainMenu, bg='green', fg='white', command=main_cus).grid(row=5, column=2)
     else:
         Button(exp, width=20, text='Check Products expiring', bg='red', fg='white', command=exp_dt).grid(row=5,
                                                                                                          column=0)
-        Button(exp, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=5, column=2)
+        Button(exp, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=2)
     exp.mainloop()
 
 
@@ -472,7 +473,7 @@ def billing():
     qtys = Entry(st)
     qtys.grid(row=8, column=5)
     refresh()
-    Button(st, width=15, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=1, column=6)
+    Button(st, width=15, mainMenu, bg='green', fg='white', command=main_menu).grid(row=1, column=6)
     Button(st, width=15, text='Refresh Stock', bg='skyblue', fg='black', command=refresh).grid(row=3, column=6)
     Button(st, width=15, text='Reset Bill', bg='red', fg='white', command=billing).grid(row=4, column=6)
     Button(st, width=15, text='Print Bill', bg='orange', fg='white', command=print_bill).grid(row=5, column=6)
@@ -665,7 +666,7 @@ def show_rev():
             cx += 1
             lb1.insert(cx, 'Bill No.: ' + str(i[5]) + '    : PHP ' + str(i[3]))
     c.commit()
-    Button(rev, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=15, column=0)
+    Button(rev, mainMenu, bg='green', fg='white', command=main_menu).grid(row=15, column=0)
     rev.mainloop()
 
 
@@ -689,9 +690,9 @@ def search():
     Button(st, width=15, text='Search', bg='blue', fg='white', command=search_med).grid(row=3, column=2)
     Label(st, text='-' * 70).grid(row=4, column=0, columnspan=3)
     if flags == 'apt1':
-        Button(st, width=15, text='Main Menu', bg='green', fg='white', command=main_cus).grid(row=6, column=2)
+        Button(st, width=15, mainMenu, bg='green', fg='white', command=main_cus).grid(row=6, column=2)
     else:
-        Button(st, width=15, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=6, column=2)
+        Button(st, width=15, mainMenu, bg='green', fg='white', command=main_menu).grid(row=6, column=2)
     st.mainloop()
 
 
@@ -732,7 +733,7 @@ def val_cus():
     vc_id = Entry(val)
     vc_id.grid(row=4, column=1)
     Button(val, text='Submit', bg='blue', fg='white', command=val_get).grid(row=5, column=1)
-    Button(val, text='Main Menu', bg='green', fg='white', command=main_menu).grid(row=5, column=2)
+    Button(val, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=2)
     Label(val, text='-' * 60).grid(row=6, column=0, columnspan=3)
     val.mainloop()
 
