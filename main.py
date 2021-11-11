@@ -60,8 +60,7 @@ def delete_stock():
     Label(d, text='Product').grid(row=2, column=0)
     Label(d, text='Qty.  Exp.dt.     Cost                           ').grid(row=2, column=1)
     ren()
-    b = Button(d, width=20, text='Delete', bg='red', fg='white', command=delt).grid(row=0, column=3)
-    b = Button(d, width=20, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=3)
+
     d.mainloop()
 
 
