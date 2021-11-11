@@ -605,9 +605,9 @@ def make_bill():
     m += "-----------------------------------------------\n"
     m += "Product                      Qty.       Price\n"
     m += "-----------------------------------------------\n"
-    printFormat()
+    print_format()
     
-def printFormat():
+def print_format():
     for i in range(len(sl)):
         if names[i] != 'nil':
             s1 = ' '
