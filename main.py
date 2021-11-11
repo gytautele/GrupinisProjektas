@@ -576,6 +576,10 @@ def make_bill():
     det[5] = str(random.randint(100, 999))
     B = 'bill_' + str(det[5]) + '.txt'
     total = 0.00
+    format()
+    print()
+    
+ def format():
     for i in range(10):
         if price[i] != '':
             total += price[i]  # totalling
@@ -602,6 +606,8 @@ def make_bill():
     m += "-----------------------------------------------\n"
     m += "Product                      Qty.       Price\n"
     m += "-----------------------------------------------\n"
+    
+def print():
     for i in range(len(sl)):
         if names[i] != 'nil':
             s1 = ' '
@@ -634,7 +640,6 @@ def make_bill():
     cur.execute('insert into bills values(?,?,?,?,?,?,?,?)',
                 (det[0], det[1], det[2], det[3], det[4], det[5], det[6], det[7]))
     c.commit()
-
 
 def print_bill():
     win32api.ShellExecute(0, "print", B, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
