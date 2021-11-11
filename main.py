@@ -11,7 +11,8 @@ flag = ''
 flags = ''
 mainMenu = 'Main Menu'
 mouse = '<MouseWheel>'
-select1 = "select *from med"
+select1 = "select * from med"
+listbox = '<<ListboxSelect>>'
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -94,7 +95,7 @@ def ren():
         lb1.insert(cx, '. '.join(s1))
         lb2.insert(cx, '   '.join(s2))
     c.commit()
-    lb1.bind('<<ListboxSelect>>', sel_del)
+    lb1.bind(listbox, sel_del)
 
 
 def sel_del(e):
@@ -103,7 +104,7 @@ def sel_del(e):
     print(p)
     x = 0
     sl2 = ''
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         print(x, p[0])
         if x == int(p[0]):
@@ -135,7 +136,7 @@ def modify():
     name_ = ''
     apt.destroy()
     n = []
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         n.append(i[1])
     c.commit()
@@ -161,7 +162,7 @@ def modify():
         name_.grid(row=1, column=1, columnspan=2)
     c.commit()
     name_.bind(mouse, onmousewheel)
-    name_.bind('<<ListboxSelect>>', sel_mn)
+    name_.bind(listbox, sel_mn)
 
     Label(st, text='Enter Medicine Name: ').grid(row=1, column=0)
     Label(st, text='Enter changed Value of: ').grid(row=2, column=0)
@@ -191,7 +192,7 @@ def sel_mn(e):
     print(p)
     x = 0
     sl = ''
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         print(x, p[0])
         if x == int(p[0]):
@@ -208,7 +209,7 @@ def show_val():
     global st, name_mn, att, cur, c, col, col_n, sl
     for i in range(3):
         Label(st, width=20, text='                         ').grid(row=5, column=i)
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         for j in range(9):
             if att.get() == col_n[j] and sl == i[0]:
@@ -321,7 +322,7 @@ def submit():
     global accept, c, cur, columns, sto
 
     x = [''] * 10
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         y = int(i[0])
     for i in range(1, 9):
@@ -329,7 +330,7 @@ def submit():
     sql = "insert into med values('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (
     y + 1, x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8])
     cur.execute(sql)
-    cur.execute("select * from med")
+    cur.execute(select1)
     c.commit()
 
     top = Tk()
@@ -340,7 +341,7 @@ def submit():
 
 def chk():
     global cur, c, accept, sto
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         if accept[6].get() == i[6] and i[1] == accept[1].get():
             sql = "update med set qty_left = '%s' where name = '%s'" % (
@@ -390,8 +391,7 @@ def s_exp():
     global c, cur, s, exp, top
     from datetime import date
     now = time.localtime()
-    d1 = date(now[0], now[1], now[2])
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         if (i[1] == s.get()):
             q = i[6]
@@ -418,7 +418,7 @@ def exp_dt():
     d1 = date(now[0], now[1], now[2])
     d3 = date(int(d[0:4]), int(d[5:7]), int(d[8:10]))
     Label(exp, text='S.No' + '   ' + 'Name' + '     Qty.    ' + 'Exp_date').grid(row=6, column=0, columnspan=2)
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         s = i[6]
         d2 = date(int('20' + s[8:10]), int(s[3:5]), int(s[0:2]))
@@ -510,7 +510,7 @@ def refresh():
         lb1.insert(cx, str(i[0]) + '. ' + str(i[1]))
         lb2.insert(cx, ' ' + str(i[7]) + '        ' + str(i[3]) + '             PHP ' + str(i[4]))
     c.commit()
-    lb1.bind('<<ListboxSelect>>', select_mn)
+    lb1.bind(listbox, select_mn)
 
 
 def select_mn(e):
@@ -521,7 +521,7 @@ def select_mn(e):
     from datetime import date
     now = time.localtime()
     d1 = date(now[0], now[1], now[2])
-    cur.execute("select * from med")
+    cur.execute(select1)
     for i in cur:
         if x == int(p[0]):
             sl1 = int(i[0])
@@ -680,7 +680,7 @@ def search():
     global c, cur, flag, st, mn, sym, flags
     flag = 'st'
     apt.destroy()
-    cur.execute("Select * from med")
+    cur.execute(select1)
     symp = ['nil']
     med_name = ['nil']
     for i in cur:
@@ -704,7 +704,7 @@ def search():
 
 def search_med():
     global c, cur, st, sym, columns
-    cur.execute("select * from med")
+    cur.execute(select1)
     y = []
     x = 0
     for i in cur:
