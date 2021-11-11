@@ -575,11 +575,10 @@ def make_bill():
         c.commit()
     det[5] = str(random.randint(100, 999))
     B = 'bill_' + str(det[5]) + '.txt'
-    total = 0.00
     format()
-    print()
     
  def format():
+    total = 0.00
     for i in range(10):
         if price[i] != '':
             total += price[i]  # totalling
@@ -606,6 +605,7 @@ def make_bill():
     m += "-----------------------------------------------\n"
     m += "Product                      Qty.       Price\n"
     m += "-----------------------------------------------\n"
+    print()
     
 def print():
     for i in range(len(sl)):
