@@ -12,6 +12,7 @@ flags = ''
 mainMenu = 'Main Menu'
 mouse = '<MouseWheel>'
 select1 = "select * from med"
+listbox = '<<ListboxSelect>>'
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -94,7 +95,7 @@ def ren():
         lb1.insert(cx, '. '.join(s1))
         lb2.insert(cx, '   '.join(s2))
     c.commit()
-    lb1.bind('<<ListboxSelect>>', sel_del)
+    lb1.bind(listbox, sel_del)
 
 
 def sel_del(e):
@@ -161,7 +162,7 @@ def modify():
         name_.grid(row=1, column=1, columnspan=2)
     c.commit()
     name_.bind(mouse, onmousewheel)
-    name_.bind('<<ListboxSelect>>', sel_mn)
+    name_.bind(listbox, sel_mn)
 
     Label(st, text='Enter Medicine Name: ').grid(row=1, column=0)
     Label(st, text='Enter changed Value of: ').grid(row=2, column=0)
@@ -510,7 +511,7 @@ def refresh():
         lb1.insert(cx, str(i[0]) + '. ' + str(i[1]))
         lb2.insert(cx, ' ' + str(i[7]) + '        ' + str(i[3]) + '             PHP ' + str(i[4]))
     c.commit()
-    lb1.bind('<<ListboxSelect>>', select_mn)
+    lb1.bind(listbox, select_mn)
 
 
 def select_mn(e):
