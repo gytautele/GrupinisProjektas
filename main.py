@@ -11,6 +11,7 @@ flag = ''
 flags = ''
 mainMenu = 'Main Menu'
 mouse = '<MouseWheel>'
+select1 = "select *from med"
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -85,7 +86,7 @@ def ren():
     lb2.grid(row=3, column=1)
     lb1.bind(mouse, onmousewheel)
     lb2.bind(mouse, onmousewheel)
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         cx += 1
         s1 = [str(i[0]), str(i[1])]
@@ -153,7 +154,7 @@ def modify():
     vsb = Scrollbar(orient='vertical', command=onvsb)
     vsb.grid(row=1, column=3, sticky=N + S)
     name_ = Listbox(st, width=43, yscrollcommand=vsb.set)
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         cx += 1
         name_.insert(cx, (str(i[0]) + '.  ' + str(i[1])))
@@ -295,7 +296,7 @@ def ref():
     lb4.bind(mouse, onmousewheel)
     lb5.bind(mouse, onmousewheel)
     lb6.bind(mouse, onmousewheel)
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         cx += 1
         seq = (str(i[0]), str(i[1]))
@@ -362,7 +363,7 @@ def exp_date():
     from datetime import date
     now = time.localtime()
     n = []
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         n.append(i[1])
     c.commit()
@@ -443,7 +444,7 @@ def billing():
     sl = []
     n = []
     qtys = [''] * 10
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         n.append(i[1])
     c.commit()
@@ -503,7 +504,7 @@ def refresh():
     lb2.grid(row=8, column=1)
     lb1.bind(mouse, onmousewheel)
     lb2.bind(mouse, onmousewheel)
-    cur.execute("select *from med")
+    cur.execute(select1)
     for i in cur:
         cx += 1
         lb1.insert(cx, str(i[0]) + '. ' + str(i[1]))
