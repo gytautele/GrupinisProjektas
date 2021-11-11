@@ -391,7 +391,6 @@ def s_exp():
     global c, cur, s, exp, top
     from datetime import date
     now = time.localtime()
-    d1 = date(now[0], now[1], now[2])
     cur.execute(select1)
     for i in cur:
         if (i[1] == s.get()):
