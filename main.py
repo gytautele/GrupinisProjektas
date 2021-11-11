@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter
 import time
 import sqlite3
 import random
