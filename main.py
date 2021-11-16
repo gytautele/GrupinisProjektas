@@ -581,15 +581,15 @@ def make_bill():
     for i in range(10):
         if price[i] != '':
             total += price[i]  # totalling
-    m = '\n\n\n'
-    m += "===============================================\n"
-    m += "                                  No :%s\n\n" % det[5]
-    m += " EVANZ MEDICAL STORE COMPANY\n"
-    m += " BINALBAGAN BRANCH, NEGROS OCCIDENTAL\n\n"
-    m += formatting
+    m='\n\n\n'
+    m+="===============================================\n"
+    m+="                                  No :%s\n\n" % det[5]
+    m+=" EVANZ MEDICAL STORE COMPANY\n"
+    m+=" BINALBAGAN BRANCH, NEGROS OCCIDENTAL\n\n"
+    m+=formatting
     if t == 1:
-        m += "Name: %s\n" % named
-        m += "Address: %s\n" % addd
+        m+="Name: %s\n" % named
+        m+="Address: %s\n" % addd
         det[0] = named
         det[1] = addd
         cur.execute(select2)
@@ -597,13 +597,13 @@ def make_bill():
             if i[0] == named:
                 det[7] = i[2]
     else:
-        m += "Name: %s\n" % name1.get()
-        m += "Address: %s\n" % add.get()
+        m+="Name: %s\n" % name1.get()
+        m+="Address: %s\n" % add.get()
         det[0] = name1.get()
         det[1] = add.get()
-    m += formatting
-    m += "Product                      Qty.       Price\n"
-    m += formatting
+    m+=formatting
+    m+="Product                      Qty.       Price\n"
+    m+=formatting
     print_format()
     
 def print_format():
@@ -612,22 +612,22 @@ def print_format():
             s1 = ' '
             s1 = (names[i]) + (s1 * (27 - len(names[i]))) + s1 * (3 - len(qty[i])) + qty[i] + s1 * (
                         15 - len(str(price[i]))) + str(price[i]) + '\n'
-            m += s1
-    m += "\n-----------------------------------------------\n"
+            m+=s1
+    m+="\n-----------------------------------------------\n"
     if t == 1:
         ntotal = total * 0.8
-        m += 'Total' + (' ' * 25) + (' ' * (15 - len(str(total)))) + str(total) + '\n'
-        m += "Valued customer Discount" + (' ' * (20 - len(str(total - ntotal)))) + '-' + str(total - ntotal) + '\n'
-        m += "-----------------------------------------------\n"
-        m += 'Total' + (' ' * 25) + (' ' * (12 - len(str(ntotal)))) + 'PHP ' + str(ntotal) + '\n'
+        m+='Total' + (' ' * 25) + (' ' * (15 - len(str(total)))) + str(total) + '\n'
+        m+="Valued customer Discount" + (' ' * (20 - len(str(total - ntotal)))) + '-' + str(total - ntotal) + '\n'
+        m+="-----------------------------------------------\n"
+        m+='Total' + (' ' * 25) + (' ' * (12 - len(str(ntotal)))) + 'PHP ' + str(ntotal) + '\n'
         det[3] = str(ntotal)
     else:
-        m += 'Total' + (' ' * 25) + (' ' * (12 - len(str(total)))) + 'PHP ' + str(total) + '\n'
+        m+='Total' + (' ' * 25) + (' ' * (12 - len(str(total)))) + 'PHP ' + str(total) + '\n'
         det[3] = str(total)
 
-    m += "-----------------------------------------------\n\n"
-    m += "Dealer 's signature:___________________________\n"
-    m += "===============================================\n"
+    m+="-----------------------------------------------\n\n"
+    m+="Dealer 's signature:___________________________\n"
+    m+="===============================================\n"
     print(m)
     p = time.localtime()
     det[4] = str(p[2]) + '/' + str(p[1]) + '/' + str(p[0])
@@ -635,7 +635,6 @@ def print_format():
     bill = open(B, 'w')
     bill.write(m)
     bill.close()
-    cb = ('cus_name', 'cus_add', 'items', 'Total_cost', 'bill_dt', 'bill_no', 'bill', 'val_id')
     cur.execute('insert into bills values(?,?,?,?,?,?,?,?)',
                 (det[0], det[1], det[2], det[3], det[4], det[5], det[6], det[7]))
     c.commit()
@@ -647,7 +646,6 @@ def print_bill():
 def show_rev():
     global c, cur, flag, rev
     apt.destroy()
-    cb = ('cus_name', 'cus_add', 'items', 'Total_cost', 'bill_dt', 'bill_no', 'bill', 'val_id')
     flag = 'rev'
     rev = Tk()
     total = 0.0
