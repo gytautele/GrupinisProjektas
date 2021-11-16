@@ -15,6 +15,7 @@ mouse = '<MouseWheel>'
 select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
+formatting="-----------------------------------------------\n"
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -585,7 +586,7 @@ def make_bill():
     m += "                                  No :%s\n\n" % det[5]
     m += " EVANZ MEDICAL STORE COMPANY\n"
     m += " BINALBAGAN BRANCH, NEGROS OCCIDENTAL\n\n"
-    m += "-----------------------------------------------\n"
+    m += formatting
     if t == 1:
         m += "Name: %s\n" % named
         m += "Address: %s\n" % addd
@@ -600,9 +601,9 @@ def make_bill():
         m += "Address: %s\n" % add.get()
         det[0] = name1.get()
         det[1] = add.get()
-    m += "-----------------------------------------------\n"
+    m += formatting
     m += "Product                      Qty.       Price\n"
-    m += "-----------------------------------------------\n"
+    m += formatting
     print_format()
     
 def print_format():
