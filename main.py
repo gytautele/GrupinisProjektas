@@ -520,7 +520,6 @@ def select_mn(e):
     x = 0
     sl1 = ''
     from datetime import date
-    now = time.localtime()
     cur.execute(select1)
     for i in cur:
         if x == int(p[0]):
