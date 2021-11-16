@@ -5,6 +5,7 @@ import random
 import tempfile
 import win32api
 import win32print
+from datetime import date
 
 f = ''
 flag = ''
@@ -12,6 +13,7 @@ flags = ''
 mainMenu = 'Main Menu'
 mouse = '<MouseWheel>'
 select1 = "select * from med"
+select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 
 login = sqlite3.connect("admin.db")
@@ -361,7 +363,6 @@ def exp_date():
     global exp, s, c, cur, flag, apt, flags
     apt.destroy()
     flag = 'exp'
-    from datetime import date
     now = time.localtime()
     n = []
     cur.execute(select1)
@@ -390,7 +391,6 @@ def exp_date():
 def s_exp():
     global c, cur, s, exp, top
     from datetime import date
-    now = time.localtime()
     cur.execute(select1)
     for i in cur:
         if (i[1] == s.get()):
@@ -520,7 +520,6 @@ def select_mn(e):
     sl1 = ''
     from datetime import date
     now = time.localtime()
-    d1 = date(now[0], now[1], now[2])
     cur.execute(select1)
     for i in cur:
         if x == int(p[0]):
@@ -544,7 +543,7 @@ def append2bill():
 
 def blue():
     global st, c, cur, named, addd, t, vc_id
-    cur.execute("select * from cus")
+    cur.execute(select2)
     for i in cur:
         if vc_id.get() != '' and int(vc_id.get()) == i[2]:
             named = i[0]
@@ -561,7 +560,6 @@ def blue():
 def make_bill():
     global t, c, B, cur, st, names, qty, sl, named, addd, name1, add, det, vc_id
     price = [0.0] * 10
-    q = 0
     det = ['', '', '', '', '', '', '', '']
     det[2] = str(sl)
     for i in range(len(sl)):
@@ -593,7 +591,7 @@ def make_bill():
         m += "Address: %s\n" % addd
         det[0] = named
         det[1] = addd
-        cur.execute('select * from cus')
+        cur.execute(select2)
         for i in cur:
             if i[0] == named:
                 det[7] = i[2]
@@ -748,7 +746,7 @@ def val_get():
     global name_vc, add_vc, val, dbt, c, cur, apt, vc_id
     cur.execute("insert into cus values(?,?,?)", (name_vc.get(), add_vc.get(), vc_id.get()))
     l.execute("insert into log values(?,?)", (name_vc.get(), vc_id.get()))
-    cur.execute("select * from cus")
+    cur.execute(select2)
     for i in cur:
         print(i[0], i[1], i[2])
     c.commit()
