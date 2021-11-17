@@ -16,7 +16,8 @@ select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 formatting="-----------------------------------------------\n"
-
+global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, name_, st, col, col_n, name_, name_mn, sl, sto, name_vc, columns, t, name, name1, add
+global names, qty, qtys, vc_id, names, named, addd, B, named, det, rev, sym, add_vc, val, dbt,val, add_vc
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -27,36 +28,28 @@ cur = c.cursor()
 columns = ('Sl No', 'Name', 'Type', 'Quantity Left', 'Cost', 'Purpose', 'Expiry Date', 'Rack location', 'Manufacture')
 
 
-def open_win():
-    global apt, flag
+def open_window():
     flag = 'apt'
     apt = Tk()
     apt.title("Interface")
     Label(apt, text="EVANZ MEDICAL STORE COMPANY").grid(row=0, column=0, columnspan=3)
     Label(apt, text='*' * 80).grid(row=1, column=0, columnspan=3)
     Label(apt, text='-' * 80).grid(row=3, column=0, columnspan=3)
-
     Label(apt, text="Stock Maintenance", bg='green', fg='white').grid(row=2, column=0)
     Button(apt, text='New V.C.', width=25, bg='green', fg='white', command=val_cus).grid(row=4, column=0)
     Button(apt, text='Add product to Stock', bg='green', fg='white', width=25, command=stock).grid(row=5, column=0)
-    Button(apt, text='Delete product from Stock', bg='red', fg='white', width=25, command=delete_stock).grid(row=6,
-                                                                                                             column=0)
-
+    Button(apt, text='Delete product from Stock', bg='red', fg='white', width=25, command=delete_stock).grid(row=6, column=0)
     Label(apt, text="Access Database", bg='blue', fg='white').grid(row=2, column=1)
     Button(apt, text='Modify', width=15, bg='blue', fg='white', command=modify).grid(row=4, column=1)
     Button(apt, text='Search', width=15, bg='blue', fg='white', command=search).grid(row=5, column=1)
     Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=exp_date).grid(row=6, column=1)
-
     Label(apt, text="Handle Cash Flows", bg='skyblue', fg='black').grid(row=2, column=2)
-    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=20, command=show_rev).grid(row=5,
-                                                                                                         column=2)
+    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=20, command=show_rev).grid(row=5,column=2)
     Button(apt, text='Billing', width=20, bg='skyblue', fg='black', command=billing).grid(row=4, column=2)
     Button(apt, text='Logout', bg='red', fg='white', width=20, command=again).grid(row=6, column=2)
     apt.mainloop()
 
-
 def delete_stock():
-    global cur, c, flag, lb1, d
     apt.destroy()
     flag = 'd'
     d = Tk()
@@ -64,15 +57,11 @@ def delete_stock():
     Label(d, text='Enter Product to delete:').grid(row=0, column=0)
     Label(d, text='', width=30, bg='white').grid(row=0, column=1)
     Label(d, text='Product').grid(row=2, column=0)
-    Label(d, text='Qty.  Exp.dt.     Cost                           ').grid(row=2, column=1)
+    Label(d, text='Qty.  Exp.dt.     Cost         ').grid(row=2, column=1)
     ren()
-
     d.mainloop()
 
-
 def ren():
-    global lb1, d, cur, c
-
     def onvsb(*args):
         lb1.yview(*args)
         lb2.yview(*args)
@@ -92,18 +81,19 @@ def ren():
     lb1.bind(mouse, onmousewheel)
     lb2.bind(mouse, onmousewheel)
     cur.execute(select1)
-    for i in cur:
+    sql_injection()
+    lb1.bind(listbox, sel_del)
+
+def sql_injection():
+     for i in cur:
         cx += 1
         s1 = [str(i[0]), str(i[1])]
         s2 = [str(i[3]), str(i[6]), str(i[4])]
         lb1.insert(cx, '. '.join(s1))
         lb2.insert(cx, '   '.join(s2))
     c.commit()
-    lb1.bind(listbox, sel_del)
-
 
 def sel_del(e):
-    global lb1, d, cur, c, p, sl2
     p = lb1.curselection()
     print(p)
     x = 0
@@ -124,16 +114,12 @@ def sel_del(e):
             Label(d, text=i[0] + '. ' + i[1], bg='white').grid(row=0, column=1)
     c.commit()
 
-
 def delt():
-    global p, c, cur, d
     cur.execute("delete from med where sl_no=?", (sl2,))
     c.commit()
     ren()
 
-
 def modify():
-    global cur, c, accept, flag, att, up, n, name_, apt, st, col, col_n
     col = ('', '', 'type', 'qty_left', 'cost', 'purpose', 'expdt', 'loc', 'mfg')
     col_n = ('', '', 'Type', 'Quantity Left', 'Cost', 'Purpose', 'Expiry Date', 'Rack location', 'Manufacture')
     flag = 'st'
@@ -183,14 +169,12 @@ def modify():
 
 
 def res():
-    global st, up
     up = Entry(st)
     up.grid(row=2, column=2)
     Label(st, width=20, text='                         ').grid(row=5, column=i)
 
 
 def sel_mn(e):
-    global n, name_, name_mn, sl, c, cur
     name_mn = ''
     p = name_.curselection()
     print(p)
@@ -210,7 +194,6 @@ def sel_mn(e):
 
 
 def show_val():
-    global st, name_mn, att, cur, c, col, col_n, sl
     for i in range(3):
         Label(st, width=20, text='                         ').grid(row=5, column=i)
     cur.execute(select1)
@@ -224,7 +207,6 @@ def show_val():
 
 
 def save_mod():  # save modified data
-    global cur, c, att, name_mn, st, up, col_n, sl
     for i in range(9):
         if att.get() == col_n[i]:
             a = col[i]
@@ -235,7 +217,6 @@ def save_mod():  # save modified data
 
 
 def stock():
-    global cur, c, columns, accept, flag, sto, apt
     apt.destroy()
     flag = 'sto'
     accept = [''] * 10
@@ -260,9 +241,7 @@ def stock():
 
 
 def ref():
-    global sto, c, cur
-
-    def onvsb(*args):
+     def onvsb(*args):
         lb1.yview(*args)
         lb2.yview(*args)
         lb3.yview(*args)
@@ -315,16 +294,12 @@ def ref():
 
 
 def reset():
-    global sto, accept
     for i in range(1, len(columns)):
         Label(sto, width=15, text=' ' * (14 - len(str(columns[i]))) + str(columns[i]) + ':').grid(row=i + 2, column=0)
         accept[i] = Entry(sto)
         accept[i].grid(row=i + 2, column=1)
-
-
+        
 def submit():
-    global accept, c, cur, columns, sto
-
     x = [''] * 10
     cur.execute(select1)
     for i in cur:
@@ -344,7 +319,6 @@ def submit():
 
 
 def chk():
-    global cur, c, accept, sto
     cur.execute(select1)
     for i in cur:
         if accept[6].get() == i[6] and i[1] == accept[1].get():
@@ -391,7 +365,6 @@ def exp_date():
 
 
 def s_exp():
-    global c, cur, s, exp, top
     from datetime import date
     cur.execute(select1)
     for i in cur:
@@ -408,7 +381,6 @@ def s_exp():
 
 
 def exp_dt():
-    global c, cur, exp, top
     x = 0
     z = 1
     from datetime import datetime, timedelta
@@ -438,7 +410,6 @@ def exp_dt():
 
 
 def billing():
-    global c, cur, apt, flag, t, name, name1, add, st, names, qty, sl, qtys, vc_id, n, namee, lb1
     t = 0
     vc_id = ''
     names = []
@@ -481,22 +452,17 @@ def billing():
     Button(st, width=15, text='Reset Bill', bg='red', fg='white', command=billing).grid(row=4, column=6)
     Button(st, width=15, text='Print Bill', bg='orange', fg='white', command=print_bill).grid(row=5, column=6)
     Button(st, width=15, text='Save Bill', bg='blue', fg='white', command=make_bill).grid(row=7, column=6)
-
     st.mainloop()
 
 
 def refresh():
-    global cur, c, st, lb1, lb2, vsb
-
     def onvsb(*args):
         lb1.yview(*args)
         lb2.yview(*args)
-
     def onmousewheel():
         lb1.ywiew = ('scroll', event.delta, 'units')
         lb2.ywiew = ('scroll', event.delta, 'units')
         return 'break'
-
     cx = 0
     vsb = Scrollbar(orient='vertical', command=onvsb)
     lb1 = Listbox(st, width=25, yscrollcommand=vsb.set)
@@ -516,7 +482,6 @@ def refresh():
 
 
 def select_mn(e):
-    global st, lb1, n, p, nm, sl1
     p = lb1.curselection()
     x = 0
     sl1 = ''
@@ -534,7 +499,6 @@ def select_mn(e):
 
 
 def append2bill():
-    global st, names, nm, qty, sl, cur, c, sl1
     sl.append(sl1)
     names.append(nm)
     qty.append(qtys.get())
@@ -543,7 +507,6 @@ def append2bill():
 
 
 def blue():
-    global st, c, cur, named, addd, t, vc_id
     cur.execute(select2)
     for i in cur:
         if vc_id.get() != '' and int(vc_id.get()) == i[2]:
@@ -559,7 +522,6 @@ def blue():
 
 
 def make_bill():
-    global t, c, B, cur, st, names, qty, sl, named, addd, name1, add, det, vc_id
     price = [0.0] * 10
     det = ['', '', '', '', '', '', '', '']
     det[2] = str(sl)
@@ -644,7 +606,6 @@ def print_bill():
 
 
 def show_rev():
-    global c, cur, flag, rev
     apt.destroy()
     flag = 'rev'
     rev = Tk()
@@ -674,7 +635,6 @@ def show_rev():
 
 
 def search():
-    global c, cur, flag, st, mn, sym, flags
     flag = 'st'
     apt.destroy()
     cur.execute(select1)
@@ -700,7 +660,6 @@ def search():
 
 
 def search_med():
-    global c, cur, st, sym, columns
     cur.execute(select1)
     y = []
     x = 0
@@ -719,7 +678,6 @@ def search_med():
 
 
 def val_cus():
-    global val, flag, dbt, name_vc, add_vc, cur, c, vc_id
     apt.destroy()
     cur.execute("select * from cus")
     flag = 'val'
@@ -742,7 +700,6 @@ def val_cus():
 
 
 def val_get():
-    global name_vc, add_vc, val, dbt, c, cur, apt, vc_id
     cur.execute("insert into cus values(?,?,?)", (name_vc.get(), add_vc.get(), vc_id.get()))
     l.execute("insert into log values(?,?)", (name_vc.get(), vc_id.get()))
     cur.execute(select2)
@@ -753,7 +710,6 @@ def val_get():
 
 
 def again():
-    global un, pwd, flag, root, apt
     if flag == 'apt':
         apt.destroy()
     root = Tk()
@@ -772,9 +728,7 @@ def again():
     Button(root, width=6, bg='red', fg='white', text='Close', command=root.destroy).grid(row=5, column=1)
     root.mainloop()
 
-
 def check():
-    global un, pwd, login, l, root
     u = un.get()
     p = pwd.get()
     l.execute("select * from log")
@@ -786,7 +740,6 @@ def check():
             root.destroy()
             open_cus()
     login.commit()
-
 
 def main_menu():
     global sto, apt, flag, root, st, val, exp, st1, rev
@@ -804,8 +757,7 @@ def main_menu():
         exp.destroy()
     elif flag == 'd':
         d.destroy()
-    open_win()
-
+    open_window()
 
 def main_cus():
     global st, flag, exp
@@ -815,9 +767,7 @@ def main_cus():
         st.destroy()
     open_cus()
 
-
 def open_cus():
-    global apt, flag, flags
     flags = 'apt1'
     apt = Tk()
     apt.title("Interface")
@@ -825,15 +775,12 @@ def open_cus():
     Label(apt, text='*' * 40).grid(row=1, column=0)
     Label(apt, text='*  WELCOME CUSTOMER SERVICES  *', bg='green', fg='white').grid(row=2, column=0)
     Label(apt, text='-' * 40).grid(row=3, column=0)
-
     Label(apt, text='-' * 40).grid(row=5, column=0)
     Button(apt, text='Search', bg='blue', fg='white', width=15, command=search).grid(row=6, column=0)
     Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=exp_date).grid(row=7, column=0)
-
     Label(apt, text='-' * 40).grid(row=8, column=0)
     Button(apt, text='Logout', bg='green', fg='white', command=again1).grid(row=9, column=0)
     apt.mainloop()
-
 
 def again1():
     global flags
@@ -841,6 +788,4 @@ def again1():
     flags = ''
     again()
 
-
 again()
-
