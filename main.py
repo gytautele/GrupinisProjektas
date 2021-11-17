@@ -227,7 +227,7 @@ def save_mod():  # save modified data
     for i in range(9):
         if att.get() == col_n[i]:
             a = col[i]
-    sql = "update med set '%s' = '%s' where sl_no = '%s'" % (a, up.get(), sl)
+    sql = "update * set '%s' = '%s' where sl_no = '%s'" % (a, up.get(), sl)
     cur.execute(sql)
     c.commit()
     Label(st, text='Updated!').grid(row=5, column=4)
