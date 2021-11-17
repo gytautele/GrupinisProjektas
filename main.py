@@ -95,24 +95,26 @@ def sql_injection():
 
 def sel_del(e):
     p = lb1.curselection()
-    print(p)
     x = 0
     sl2 = ''
     cur.execute(select1)
-    for i in cur:
-        print(x, p[0])
-        if x == int(p[0]):
-            sl2 = i[0]
-            break
-        x += 1
-    c.commit()
-    print(sl2)
+    loop()
     Label(d, text=' ', bg='white', width=20).grid(row=0, column=1)
     cur.execute('Select * from med')
     for i in cur:
         if i[0] == sl2:
             Label(d, text=i[0] + '. ' + i[1], bg='white').grid(row=0, column=1)
     c.commit()
+    
+def loop():
+    for i in cur:
+    print(x, p[0])
+        if x == int(p[0]):
+            sl2 = i[0]
+            break
+        x += 1
+    c.commit()
+    print(sl2)
 
 def delete_stock():
     cur.execute("delete from med where sl_no=?", (sl2,))
@@ -153,7 +155,9 @@ def modify():
     c.commit()
     name_.bind(mouse, onmousewheel)
     name_.bind(listbox, select_meniu_option)
-
+    enter_info()
+    
+def enter_info():
     Label(st, text='Enter Medicine Name: ').grid(row=1, column=0)
     Label(st, text='Enter changed Value of: ').grid(row=2, column=0)
     att = Spinbox(st, values=col_n)
@@ -187,7 +191,7 @@ def select_meniu_option(e):
     
 def show_values():
     for i in range(3):
-        Label(st, width=20, text='                         ').grid(row=5, column=i)
+        Label(st, width=20, text='   ').grid(row=5, column=i)
     cur.execute(select1)
     for i in cur:
         for j in range(9):
