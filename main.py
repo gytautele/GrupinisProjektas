@@ -1,11 +1,11 @@
 import tkinter
 import time
 import sqlite3
-import random
 import tempfile
 import win32api
 import win32print
 from datetime import date
+from random import randrange
 
 f = ''
 flag = ''
@@ -16,6 +16,7 @@ select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 formatting="-----------------------------------------------\n"
+
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -571,7 +572,7 @@ def make_bill():
             print(qty[k], price[k])
             cur.execute("update med set qty_left=? where sl_no=?", (int(i[3]) - int(qty[k]), sl[k]))
         c.commit()
-    det[5] = str(random.randint(100, 999))
+    det[5] = str(random.randrange(100, 999))
     B = 'bill_' + str(det[5]) + '.txt'
     format()
     
