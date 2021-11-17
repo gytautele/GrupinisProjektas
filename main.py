@@ -16,7 +16,7 @@ select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 formatting="-----------------------------------------------\n"
-global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, st, col, col_n, name_, name_mn, sl, sto, name_vc, t, name, name1, add
+global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, st, col, col_n, name_, name_mn, some, sto, name_vc, t, name, name1, add
 global names, qty, qtys, vc_id, names, named, addd, B, named, det, rev, sym, add_vc
 
 login = sqlite3.connect("admin.db")
@@ -85,7 +85,7 @@ def renew_window_info():
     lb1.bind(listbox, sel_del)
 
 def sql_injection():
-     for i in cur:
+    for i in cur:
         cx += 1
         s1 = [str(i[0]), str(i[1])]
         s2 = [str(i[3]), str(i[6]), str(i[4])]
@@ -96,13 +96,13 @@ def sql_injection():
 def sel_del(e):
     p = lb1.curselection()
     x = 0
-    sl2 = ''
+    some2 = ''
     cur.execute(select1)
     loop()
     Label(d, text=' ', bg='white', width=20).grid(row=0, column=1)
     cur.execute('Select * from med')
     for i in cur:
-        if i[0] == sl2:
+        if i[0] == some2:
             Label(d, text=i[0] + '. ' + i[1], bg='white').grid(row=0, column=1)
     c.commit()
     
@@ -110,14 +110,14 @@ def loop():
     for i in cur:
     print(x, p[0])
         if x == int(p[0]):
-            sl2 = i[0]
+            some2 = i[0]
             break
         x += 1
     c.commit()
-    print(sl2)
+    print(some2)
 
 def delete_stock():
-    cur.execute("delete from med where sl_no=?", (sl2,))
+    cur.execute("delete from med where some_no=?", (some2,))
     c.commit()
     renew_window_info()
 
@@ -176,17 +176,17 @@ def select_meniu_option(e):
     p = name_.curselection()
     print(p)
     x = 0
-    sl = ''
+    some = ''
     cur.execute(select1)
     for i in cur:
         print(x, p[0])
         if x == int(p[0]):
-            sl = i[0]
+            some = i[0]
             break
         x += 1
     c.commit()
-    print(sl)
-    name_nm = n[int(sl)]
+    print(some)
+    name_nm = n[int(some)]
     print(name_nm)
     
 def show_values():
@@ -195,7 +195,7 @@ def show_values():
     cur.execute(select1)
     for i in cur:
         for j in range(9):
-            if att.get() == col_n[j] and sl == i[0]:
+            if att.get() == col_n[j] and some == i[0]:
                 Label(st, text=str(i[0])).grid(row=5, column=0)
                 Label(st, text=str(i[1])).grid(row=5, column=1)
                 Label(st, text=str(i[j])).grid(row=5, column=2)
@@ -205,7 +205,7 @@ def save_modified_data():
     for i in range(9):
         if att.get() == col_n[i]:
             a = col[i]
-    sql = "update * set '%s' = '%s' where sl_no = '%s'" % (a, up.get(), sl)
+    sql = "update * set '%s' = '%s' where some_no = '%s'" % (a, up.get(), some)
     cur.execute(sql)
     c.commit()
     Label(st, text='Updated!').grid(row=5, column=4)
@@ -393,7 +393,7 @@ def billing():
     vc_id = ''
     names = []
     qty = []
-    sl = []
+    some = []
     n = []
     qtys = [''] * 10
     cur.execute(select1)
@@ -459,30 +459,29 @@ def refresh():
     c.commit()
     lb1.bind(listbox, select_meniu)
 
-
 def select_meniu(e):
     p = lb1.curselection()
     x = 0
-    sl1 = ''
+    some1 = ''
     from datetime import date
     cur.execute(select1)
     for i in cur:
         if x == int(p[0]):
-            sl1 = int(i[0])
+            some1 = int(i[0])
             break
         x += 1
     c.commit()
-    print(sl1)
+    print(some1)
     nm = n[x]
     print(nm)
 
 
 def append_bill():
-    sl.append(sl1)
+    some.append(some1)
     names.append(nm)
     qty.append(qtys.get())
     print(qty)
-    print(sl[-1], names[-1], qty[-1])
+    print(some[-1], names[-1], qty[-1])
 
 
 def blue():
@@ -503,15 +502,15 @@ def blue():
 def make_bill():
     price = [0.0] * 10
     det = ['', '', '', '', '', '', '', '']
-    det[2] = str(sl)
-    for i in range(len(sl)):
-        print(sl[i], ' ', qty[i], ' ', names[i])
-    for k in range(len(sl)):
-        cur.execute("select * from med where sl_no=?", (sl[k],))
+    det[2] = str(somel)
+    for i in range(len(somel)):
+        print(somel[i], ' ', qty[i], ' ', names[i])
+    for k in range(len(somel)):
+        cur.execute("select * from med where some_no=?", (some[k],))
         for i in cur:
             price[k] = int(qty[k]) * float(i[4])
             print(qty[k], price[k])
-            cur.execute("update med set qty_left=? where sl_no=?", (int(i[3]) - int(qty[k]), sl[k]))
+            cur.execute("update med set qty_left=? where some_no=?", (int(i[3]) - int(qty[k]), some[k]))
         c.commit()
     det[5] = str(random.randrange(100, 999))
     B = 'bill_' + str(det[5]) + '.txt'
@@ -548,7 +547,7 @@ def make_bill():
     print_format()
     
 def print_format():
-    for i in range(len(sl)):
+    for i in range(len(some)):
         if names[i] != 'nil':
             s1 = ' '
             s1 = (names[i]) + (s1 * (27 - len(names[i]))) + s1 * (3 - len(qty[i])) + qty[i] + s1 * (
