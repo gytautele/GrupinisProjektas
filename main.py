@@ -347,7 +347,7 @@ def chk():
     cur.execute(select1)
     for i in cur:
         if accept[6].get() == i[6] and i[1] == accept[1].get():
-            sql = "update med set qty_left = '%s' where name = '%s'" % (
+            sql = "update * set qty_left = '%s' where name = '%s'" % (
             str(int(i[3]) + int(accept[3].get())), accept[1].get())
             cur.execute(sql)
             c.commit()
