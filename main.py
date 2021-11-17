@@ -538,7 +538,7 @@ def append2bill():
     names.append(nm)
     qty.append(qtys.get())
     print(qty)
-    print(sl[len(sl) - 1], names[len(names) - 1], qty[len(qty) - 1])
+    print(sl[-1], names[-1], qty[-1])
 
 
 def blue():
