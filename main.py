@@ -4,7 +4,7 @@ import sqlite3
 import tempfile
 import win32api
 import win32print
-from datetime import date
+from datetime import date, datetime, timedelta
 from random import randrange
 
 f = ''
@@ -16,8 +16,8 @@ select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 formatting="-----------------------------------------------\n"
-global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, name_, st, col, col_n, name_, name_mn, sl, sto, name_vc, columns, t, name, name1, add
-global names, qty, qtys, vc_id, names, named, addd, B, named, det, rev, sym, add_vc, val, dbt,val, add_vc
+global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, st, col, col_n, name_, name_mn, sl, sto, name_vc, t, name, name1, add
+global names, qty, qtys, vc_id, names, named, addd, B, named, det, rev, sym, add_vc
 
 login = sqlite3.connect("admin.db")
 l = login.cursor()
@@ -36,15 +36,15 @@ def open_window():
     Label(apt, text='*' * 80).grid(row=1, column=0, columnspan=3)
     Label(apt, text='-' * 80).grid(row=3, column=0, columnspan=3)
     Label(apt, text="Stock Maintenance", bg='green', fg='white').grid(row=2, column=0)
-    Button(apt, text='New V.C.', width=25, bg='green', fg='white', command=val_cus).grid(row=4, column=0)
+    Button(apt, text='New V.C.', width=25, bg='green', fg='white', command=get_customer_info).grid(row=4, column=0)
     Button(apt, text='Add product to Stock', bg='green', fg='white', width=25, command=stock).grid(row=5, column=0)
     Button(apt, text='Delete product from Stock', bg='red', fg='white', width=25, command=delete_stock).grid(row=6, column=0)
     Label(apt, text="Access Database", bg='blue', fg='white').grid(row=2, column=1)
     Button(apt, text='Modify', width=15, bg='blue', fg='white', command=modify).grid(row=4, column=1)
     Button(apt, text='Search', width=15, bg='blue', fg='white', command=search).grid(row=5, column=1)
-    Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=exp_date).grid(row=6, column=1)
+    Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=expiry_date).grid(row=6, column=1)
     Label(apt, text="Handle Cash Flows", bg='skyblue', fg='black').grid(row=2, column=2)
-    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=20, command=show_rev).grid(row=5,column=2)
+    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=20, command=show_revenue).grid(row=5,column=2)
     Button(apt, text='Billing', width=20, bg='skyblue', fg='black', command=billing).grid(row=4, column=2)
     Button(apt, text='Logout', bg='red', fg='white', width=20, command=again).grid(row=6, column=2)
     apt.mainloop()
@@ -58,10 +58,10 @@ def delete_stock():
     Label(d, text='', width=30, bg='white').grid(row=0, column=1)
     Label(d, text='Product').grid(row=2, column=0)
     Label(d, text='Qty.  Exp.dt.     Cost         ').grid(row=2, column=1)
-    ren()
+    renew_windows_info()
     d.mainloop()
 
-def ren():
+def renew_window_info():
     def onvsb(*args):
         lb1.yview(*args)
         lb2.yview(*args)
@@ -114,10 +114,10 @@ def sel_del(e):
             Label(d, text=i[0] + '. ' + i[1], bg='white').grid(row=0, column=1)
     c.commit()
 
-def delt():
+def delete_stock():
     cur.execute("delete from med where sl_no=?", (sl2,))
     c.commit()
-    ren()
+    renew_window_info()
 
 def modify():
     col = ('', '', 'type', 'qty_left', 'cost', 'purpose', 'expdt', 'loc', 'mfg')
@@ -152,7 +152,7 @@ def modify():
         name_.grid(row=1, column=1, columnspan=2)
     c.commit()
     name_.bind(mouse, onmousewheel)
-    name_.bind(listbox, sel_mn)
+    name_.bind(listbox, select_meniu_option)
 
     Label(st, text='Enter Medicine Name: ').grid(row=1, column=0)
     Label(st, text='Enter changed Value of: ').grid(row=2, column=0)
@@ -160,21 +160,14 @@ def modify():
     att.grid(row=2, column=1)
     up = Entry(st)
     up.grid(row=2, column=2)
-    Button(st, width=10, text='Submit', bg='green', fg='white', command=save_mod).grid(row=2, column=4)
+    Button(st, width=10, text='Submit', bg='green', fg='white', command=save_modified_data).grid(row=2, column=4)
     Button(st, width=10, text='Reset', bg='red', fg='white', command=res).grid(row=2, column=5)
-    Button(st, width=10, text='Show data', bg='blue', fg='white', command=show_val).grid(row=1, column=4)
+    Button(st, width=10, text='Show data', bg='blue', fg='white', command=show_values).grid(row=1, column=4)
     Label(st, text='-' * 120).grid(row=3, column=0, columnspan=6)
     Button(st, width=10, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=5)
     st.mainloop()
 
-
-def res():
-    up = Entry(st)
-    up.grid(row=2, column=2)
-    Label(st, width=20, text='                         ').grid(row=5, column=i)
-
-
-def sel_mn(e):
+def select_meniu_option(e):
     name_mn = ''
     p = name_.curselection()
     print(p)
@@ -191,9 +184,8 @@ def sel_mn(e):
     print(sl)
     name_nm = n[int(sl)]
     print(name_nm)
-
-
-def show_val():
+    
+def show_values():
     for i in range(3):
         Label(st, width=20, text='                         ').grid(row=5, column=i)
     cur.execute(select1)
@@ -205,8 +197,7 @@ def show_val():
                 Label(st, text=str(i[j])).grid(row=5, column=2)
     c.commit()
 
-
-def save_mod():  # save modified data
+def save_modified_data():
     for i in range(9):
         if att.get() == col_n[i]:
             a = col[i]
@@ -214,7 +205,6 @@ def save_mod():  # save modified data
     cur.execute(sql)
     c.commit()
     Label(st, text='Updated!').grid(row=5, column=4)
-
 
 def stock():
     apt.destroy()
@@ -231,16 +221,15 @@ def stock():
     Button(sto, width=15, text='Submit', bg='blue', fg='white', command=submit).grid(row=12, column=1)
     Label(sto, text='-' * 165).grid(row=13, column=0, columnspan=7)
     Button(sto, width=15, text='Reset', bg='red', fg='white', command=reset).grid(row=12, column=0)
-    Button(sto, width=15, text='Refresh stock', bg='skyblue', fg='black', command=ref).grid(row=12, column=4)
+    Button(sto, width=15, text='Refresh stock', bg='skyblue', fg='black', command=refresh).grid(row=12, column=4)
     for i in range(1, 6):
         Label(sto, text=columns[i]).grid(row=14, column=i - 1)
     Label(sto, text='Exp           Rack   Manufacturer                      ').grid(row=14, column=5)
     Button(sto, width=10, mainMenu, bg='green', fg='white', command=main_menu).grid(row=12, column=5)
-    ref()
+    refresh()
     sto.mainloop()
 
-
-def ref():
+def refresh():
      def onvsb(*args):
         lb1.yview(*args)
         lb2.yview(*args)
@@ -256,7 +245,6 @@ def ref():
         lb4.ywiew = ('scroll', event.delta, 'units')
         lb5.ywiew = ('scroll', event.delta, 'units')
         lb6.ywiew = ('scroll', event.delta, 'units')
-
         return 'break'
 
     cx = 0
@@ -292,7 +280,6 @@ def ref():
         lb6.insert(cx, i[6] + '    ' + i[7] + '    ' + i[8])
     c.commit()
 
-
 def reset():
     for i in range(1, len(columns)):
         Label(sto, width=15, text=' ' * (14 - len(str(columns[i]))) + str(columns[i]) + ':').grid(row=i + 2, column=0)
@@ -311,12 +298,10 @@ def submit():
     cur.execute(sql)
     cur.execute(select1)
     c.commit()
-
     top = Tk()
     Label(top, width=20, text='Success!').pack()
     top.mainloop()
     main_menu()
-
 
 def chk():
     cur.execute(select1)
@@ -334,9 +319,7 @@ def chk():
             submit()
     c.commit()
 
-
-def exp_date():
-    global exp, s, c, cur, flag, apt, flags
+def expiry_date():
     apt.destroy()
     flag = 'exp'
     now = time.localtime()
@@ -347,8 +330,7 @@ def exp_date():
     c.commit()
     exp = Tk()
     exp.title('EXPIRY CHECK')
-    Label(exp, text='Today : ' + str(now[2]) + '/' + str(now[1]) + '/' + str(now[0])).grid(row=0, column=0,
-                                                                                           columnspan=3)
+    Label(exp, text='Today : ' + str(now[2]) + '/' + str(now[1]) + '/' + str(now[0])).grid(row=0, column=0, columnspan=3)
     Label(exp, text='Selling Expired Medicines and Drugs is Illegal').grid(row=1, column=0, columnspan=3)
     Label(exp, text='-' * 80).grid(row=2, column=0, columnspan=3)
     s = Spinbox(exp, values=n)
@@ -358,14 +340,12 @@ def exp_date():
     if flags == 'apt1':
         Button(exp, mainMenu, bg='green', fg='white', command=main_cus).grid(row=5, column=2)
     else:
-        Button(exp, width=20, text='Check Products expiring', bg='red', fg='white', command=exp_dt).grid(row=5,
+        Button(exp, width=20, text='Check Products expiring', bg='red', fg='white', command=expiry_date).grid(row=5,
                                                                                                          column=0)
         Button(exp, mainMenu, bg='green', fg='white', command=main_menu).grid(row=5, column=2)
     exp.mainloop()
 
-
 def s_exp():
-    from datetime import date
     cur.execute(select1)
     for i in cur:
         if (i[1] == s.get()):
@@ -378,12 +358,10 @@ def s_exp():
             else:
                 Label(exp, text=i[6]).grid(row=3, column=2)
     c.commit()
-
-
-def exp_dt():
+    
+def expiry_date():
     x = 0
     z = 1
-    from datetime import datetime, timedelta
     N = 7
     dt = datetime.now() + timedelta(days=N)
     d = str(dt)
@@ -398,16 +376,13 @@ def exp_dt():
         d2 = date(int('20' + s[8:10]), int(s[3:5]), int(s[0:2]))
 
         if d1 < d2 < d3:
-            Label(exp, text=str(z) + '.      ' + str(i[1]) + '    ' + str(i[3]) + '    ' + str(i[6])).grid(row=x + 7,
-                                                                                                           column=0,
-                                                                                                           columnspan=2)
+            Label(exp, text=str(z) + '.      ' + str(i[1]) + '    ' + str(i[3]) + '    ' + str(i[6])).grid(row=x + 7, column=0, columnspan=2)
             x += 1
             z += 1
         elif d1 > d2:
             top = Tk()
             Label(top, width=20, text=str(i[1]) + ' is EXPIRED!').pack()
     c.commit()
-
 
 def billing():
     t = 0
@@ -442,7 +417,7 @@ def billing():
     Label(st, text='-' * 115).grid(row=6, column=0, columnspan=7)
     Label(st, text='SELECT PRODUCT', width=25, relief='ridge').grid(row=7, column=0)
     Label(st, text=' RACK  QTY LEFT     COST          ', width=25, relief='ridge').grid(row=7, column=1)
-    Button(st, text='Add to bill', bg='blue', fg='white', width=15, command=append2bill).grid(row=8, column=6)
+    Button(st, text='Add to bill', bg='blue', fg='white', width=15, command=append_bill).grid(row=8, column=6)
     Label(st, text='QUANTITY', width=20, relief='ridge').grid(row=7, column=5)
     qtys = Entry(st)
     qtys.grid(row=8, column=5)
@@ -478,10 +453,10 @@ def refresh():
         lb1.insert(cx, str(i[0]) + '. ' + str(i[1]))
         lb2.insert(cx, ' ' + str(i[7]) + '        ' + str(i[3]) + '             PHP ' + str(i[4]))
     c.commit()
-    lb1.bind(listbox, select_mn)
+    lb1.bind(listbox, select_meniu)
 
 
-def select_mn(e):
+def select_meniu(e):
     p = lb1.curselection()
     x = 0
     sl1 = ''
@@ -498,7 +473,7 @@ def select_mn(e):
     print(nm)
 
 
-def append2bill():
+def append_bill():
     sl.append(sl1)
     names.append(nm)
     qty.append(qtys.get())
@@ -597,15 +572,13 @@ def print_format():
     bill = open(B, 'w')
     bill.write(m)
     bill.close()
-    cur.execute('insert into bills values(?,?,?,?,?,?,?,?)',
-                (det[0], det[1], det[2], det[3], det[4], det[5], det[6], det[7]))
+    cur.execute('insert into bills values(?,?,?,?,?,?,?,?)', (det[0], det[1], det[2], det[3], det[4], det[5], det[6], det[7]))
     c.commit()
 
 def print_bill():
     win32api.ShellExecute(0, "print", B, '/d:"%s"' % win32print.GetDefaultPrinter(), ".", 0)
 
-
-def show_rev():
+def show_revenue():
     apt.destroy()
     flag = 'rev'
     rev = Tk()
@@ -633,7 +606,6 @@ def show_rev():
     Button(rev, mainMenu, bg='green', fg='white', command=main_menu).grid(row=15, column=0)
     rev.mainloop()
 
-
 def search():
     flag = 'st'
     apt.destroy()
@@ -650,7 +622,7 @@ def search():
     Label(st, text='Symptom Name').grid(row=3, column=0)
     sym = Spinbox(st, values=symp)
     sym.grid(row=3, column=1)
-    Button(st, width=15, text='Search', bg='blue', fg='white', command=search_med).grid(row=3, column=2)
+    Button(st, width=15, text='Search', bg='blue', fg='white', command=search_medicaments).grid(row=3, column=2)
     Label(st, text='-' * 70).grid(row=4, column=0, columnspan=3)
     if flags == 'apt1':
         Button(st, width=15, mainMenu, bg='green', fg='white', command=main_cus).grid(row=6, column=2)
@@ -658,16 +630,14 @@ def search():
         Button(st, width=15, mainMenu, bg='green', fg='white', command=main_menu).grid(row=6, column=2)
     st.mainloop()
 
-
-def search_med():
+def search_medicaments():
     cur.execute(select1)
     y = []
     x = 0
     for i in cur:
         if i[5] == sym.get():
             y.append(
-                str(i[0]) + '. ' + str(i[1]) + '  PHP ' + str(i[4]) + '    Rack : ' + str(i[7]) + '    Mfg : ' + str(
-                    i[8]))
+                str(i[0]) + '. ' + str(i[1]) + '  PHP ' + str(i[4]) + '    Rack : ' + str(i[7]) + '    Mfg : ' + str(i[8]))
             x = x + 1
     top = Tk()
     for i in range(len(y)):
@@ -675,9 +645,8 @@ def search_med():
     Button(top, text='OK', command=top.destroy).grid(row=5, column=0)
     c.commit()
     top.mainloop()
-
-
-def val_cus():
+    
+def get_customer_info():
     apt.destroy()
     cur.execute("select * from cus")
     flag = 'val'
@@ -698,7 +667,6 @@ def val_cus():
     Label(val, text='-' * 60).grid(row=6, column=0, columnspan=3)
     val.mainloop()
 
-
 def val_get():
     cur.execute("insert into cus values(?,?,?)", (name_vc.get(), add_vc.get(), vc_id.get()))
     l.execute("insert into log values(?,?)", (name_vc.get(), vc_id.get()))
@@ -707,7 +675,6 @@ def val_get():
         print(i[0], i[1], i[2])
     c.commit()
     login.commit()
-
 
 def again():
     if flag == 'apt':
@@ -777,7 +744,7 @@ def open_cus():
     Label(apt, text='-' * 40).grid(row=3, column=0)
     Label(apt, text='-' * 40).grid(row=5, column=0)
     Button(apt, text='Search', bg='blue', fg='white', width=15, command=search).grid(row=6, column=0)
-    Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=exp_date).grid(row=7, column=0)
+    Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=expiry_date).grid(row=7, column=0)
     Label(apt, text='-' * 40).grid(row=8, column=0)
     Button(apt, text='Logout', bg='green', fg='white', command=again1).grid(row=9, column=0)
     apt.mainloop()
