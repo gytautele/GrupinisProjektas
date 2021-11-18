@@ -1,8 +1,8 @@
 import tkinter
+import win32api
 import time
 import sqlite3
 import tempfile
-import win32api
 import win32print
 from datetime import date, datetime, timedelta
 from random import randrange
@@ -16,7 +16,7 @@ select1 = "select * from med"
 select2 = "select * from cus"
 listbox = '<<ListboxSelect>>'
 formatting="-----------------------------------------------\n"
-global un, pwd, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, st, col, col_n, name_, name_mn, some, sto, name_vc, t, name, name1, add
+global username, password, login, l, root, apt, cur, c, lb1, d, p, accept, att, up, n, st, col, col_n, name_, name_mn, some, sto, name_vc, t, name, name1, add
 global names, qty, qtys, vc_id, names, named, addd, B, named, det, rev, sym, add_vc
 
 login = sqlite3.connect("admin.db")
@@ -32,21 +32,21 @@ def open_window():
     flag = 'apt'
     apt = Tk()
     apt.title("Interface")
-    Label(apt, text="EVANZ MEDICAL STORE COMPANY").grid(row=0, column=0, columnspan=3)
+    Label(apt, text="SANTAROS KLINIKOS").grid(row=0, column=0, columnspan=3)
     Label(apt, text='*' * 80).grid(row=1, column=0, columnspan=3)
     Label(apt, text='-' * 80).grid(row=3, column=0, columnspan=3)
-    Label(apt, text="Stock Maintenance", bg='green', fg='white').grid(row=2, column=0)
-    Button(apt, text='New V.C.', width=25, bg='green', fg='white', command=get_customer_info).grid(row=4, column=0)
-    Button(apt, text='Add product to Stock', bg='green', fg='white', width=25, command=stock).grid(row=5, column=0)
-    Button(apt, text='Delete product from Stock', bg='red', fg='white', width=25, command=delete_stock).grid(row=6, column=0)
+    Label(apt, text="Stock Maintenance", bg='skyblue', fg='white').grid(row=2, column=0)
+    Button(apt, text='Add customer', width=25, bg='skyblue', fg='white', command=val_cus).grid(row=4, column=0)
+    Button(apt, text='Add product to Stock', bg='skyblue', fg='white', width=25, command=stock).grid(row=5, column=0)
+    Button(apt, text='Delete product from Stock', bg='orange', fg='white', width=25, command=delete_stock).grid(row=6, column=0)
     Label(apt, text="Access Database", bg='blue', fg='white').grid(row=2, column=1)
-    Button(apt, text='Modify', width=15, bg='blue', fg='white', command=modify).grid(row=4, column=1)
-    Button(apt, text='Search', width=15, bg='blue', fg='white', command=search).grid(row=5, column=1)
-    Button(apt, text='Expiry Check', bg='red', fg='white', width=15, command=expiry_date).grid(row=6, column=1)
+    Button(apt, text='Edit Product Properties', width=25, bg='blue', fg='white', command=modify).grid(row=4, column=1)
+    Button(apt, text='Search', width=25, bg='blue', fg='white', command=search).grid(row=5, column=1)
+    Button(apt, text='Expiry Check', bg='orange', fg='white', width=25, command=exp_date).grid(row=6, column=1)
     Label(apt, text="Handle Cash Flows", bg='skyblue', fg='black').grid(row=2, column=2)
-    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=20, command=show_revenue).grid(row=5,column=2)
-    Button(apt, text='Billing', width=20, bg='skyblue', fg='black', command=billing).grid(row=4, column=2)
-    Button(apt, text='Logout', bg='red', fg='white', width=20, command=again).grid(row=6, column=2)
+    Button(apt, text="Check Today's Revenue", bg='skyblue', fg='black', width=25, command=show_rev).grid(row=5)                                                                                                    column=2)
+    Button(apt, text='Billing', width=25, bg='skyblue', fg='black', command=billing).grid(row=4, column=2)
+    Button(apt, text='Logout', bg='orange', fg='white', width=25, command=again).grid(row=6, column=2)
     apt.mainloop()
 
 def delete_stock():
@@ -417,7 +417,7 @@ def billing():
     Label(st, text="Value Id (if available)").grid(row=3, column=0)
     vc_id = Entry(st)
     vc_id.grid(row=3, column=1)
-    Button(st, text='Check V.C.', bg='green', fg='white', command=blue).grid(row=4, column=0)
+    Button(st, text='Edit Product Properties', bg='green', fg='white', command=blue).grid(row=4, column=0)
     Label(st, text='-' * 115).grid(row=6, column=0, columnspan=7)
     Label(st, text='SELECT PRODUCT', width=25, relief='ridge').grid(row=7, column=0)
     Label(st, text=' RACK  QTY LEFT     COST          ', width=25, relief='ridge').grid(row=7, column=1)
@@ -524,8 +524,8 @@ def make_bill():
     m='\n\n\n'
     m+="===============================================\n"
     m+="                                  No :%s\n\n" % det[5]
-    m+=" EVANZ MEDICAL STORE COMPANY\n"
-    m+=" BINALBAGAN BRANCH, NEGROS OCCIDENTAL\n\n"
+    m+="MEDICAL STORE\n"
+    m+="SANTAROS KLINIKOS\n\n"
     m+=formatting
     if t == 1:
         m+="Name: %s\n" % named
@@ -593,7 +593,7 @@ def show_revenue():
         if i[4] == today:
             total += float(i[3])
     print(total)
-    Label(rev, width=22, text='Total revenue: PHP ' + str(total), bg='blue', fg='white').grid(row=1, column=0)
+    Label(rev, width=22, text='Total revenue: EUR ' + str(total), bg='blue', fg='white').grid(row=1, column=0)
     cx = 0
     vsb = Scrollbar(orient='vertical')
     lb1 = Listbox(rev, width=25, yscrollcommand=vsb.set)
@@ -684,31 +684,32 @@ def again():
         apt.destroy()
     root = Tk()
     root.geometry('300x150')
-    root.title('ITSOURCECODE COMPANY')
-    Label(root, text='EVANZ MEDICAL STORE COMPANY').grid(row=0, column=0, columnspan=5)
-    Label(root, text="BINALBAGAN BRANCH, NEGROS OCCIDENTAL").grid(row=1, column=0, columnspan=5)
+    root.title('MEDICAL COMPANY')
+    Label(root, text='MEDICAL STORE').grid(row=0, column=0, columnspan=5)
+    Label(root, text="VILNIUS, SANTAROS").grid(row=1, column=0, columnspan=5)
     Label(root, text='-------------------------------------------------------').grid(row=2, column=0, columnspan=5)
     Label(root, text='Username').grid(row=3, column=0)
-    un = Entry(root, width=30)
-    un.grid(row=3, column=1)
+    username = Entry(root, width=30)
+    username.grid(row=3, column=1)
     Label(root, text='Password').grid(row=4, column=0)
-    pwd = Entry(root, width=30)
-    pwd.grid(row=4, column=1)
-    Button(root, width=6, bg='blue', fg='white', text='Enter', command=check).grid(row=5, column=0)
-    Button(root, width=6, bg='red', fg='white', text='Close', command=root.destroy).grid(row=5, column=1)
+    password = Entry(root, width=30)
+    password.grid(row=4, column=1)
+    Button(root, width=6, bg='green', fg='white', text='Enter', command=check).grid(row=6, column=0)
+    Button(root, width=6, bg='red', fg='white', text='Close', command=root.destroy).grid(row=6, column=2)
     root.mainloop()
 
 def check():
-    u = un.get()
-    p = pwd.get()
+    u = username.get()
+    p = password.get()
     l.execute("select * from log")
     for i in l:
         if i[0] == u and i[1] == p and u == 'admin':
             root.destroy()
             open_win()
-        elif i[0] == u and i[1] == p:
+        if i[0] == u and i[1] == p:
             root.destroy()
             open_cus()
+        elif print('Username or Password is incorect")
     login.commit()
 
 def main_menu():
@@ -741,7 +742,7 @@ def open_cus():
     flags = 'apt1'
     apt = Tk()
     apt.title("Interface")
-    Label(apt, text="*** EVANZ MEDICAL DRUG STORE ***", bg='blue', fg='white').grid(row=0, column=0)
+    Label(apt, text="*** SANTAROS KLINIKOS ***", bg='blue', fg='white').grid(row=0, column=0)
     Label(apt, text='*' * 40).grid(row=1, column=0)
     Label(apt, text='*  WELCOME CUSTOMER SERVICES  *', bg='green', fg='white').grid(row=2, column=0)
     Label(apt, text='-' * 40).grid(row=3, column=0)
